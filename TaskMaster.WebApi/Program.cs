@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using TaskMaster.Business;
 using TaskMaster.Domain.Interfaces;
 using TaskMaster.Infra.Repository;
-using Microsoft.EntityFrameworkCore;
+using TaskMaster.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddDbContext<RepositoryDBContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("RepositoryDBContext"),
+  options.UseSqlServer(builder.Configuration.GetConnectionString("TaskMasterDatabase"),
             b => b.MigrationsAssembly("TaskMaster.Infra")));
 
 builder.Services.AddControllers();
@@ -27,11 +28,14 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = "docs";
+});
+
+DatabaseManagementService.MigrationInitialization(app);
 
 app.UseHttpsRedirection();
 

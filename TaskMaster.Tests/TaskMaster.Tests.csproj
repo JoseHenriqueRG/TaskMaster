@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Business\TaskMaster.Business.csproj" />
+    <ProjectReference Include="..\TaskMaster.Business\TaskMaster.Business.csproj" />
   </ItemGroup>
 
   <ItemGroup>
